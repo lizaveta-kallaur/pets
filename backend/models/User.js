@@ -6,9 +6,9 @@ var Schema = mongoose.Schema;
 var Pet = require('./Pet.js')
 
 var userSchema = new Schema({
-  full_name: { type: String, required: true, unique: true },
+  full_name: { type: String, required: true },
   password: { type: String, required: true },
-  email: String,
+  email: { type: String, required: true, unique: true },
   age: Number,
   pets: [Pet]
 });
@@ -18,7 +18,7 @@ userSchema.methods.generateHash = function(password) {
 };
 
 userSchema.methods.validPassword = function(password) {
-    return bcrypt.compareSync(password, this.local.password);
+    return bcrypt.compareSync(password, this.password);
 };
 
 var User = mongoose.model('User', userSchema);

@@ -1,0 +1,51 @@
+<h1>Pets</h1>
+<div class="col-sm-6 col-sm-offset-3 modal hide" id="modal">
+
+  <h1 class="modal-header"><span class="fa fa-sign-in"></span> Add pet</h1>
+
+  <form action="/login" method="post" class="modal-body" *ngIf="pet">
+    <div class="form-group">
+      <label>Name</label>
+      <input type="text" [(ngModel)]="pet.name" class="form-control" name="name">
+    </div>
+    <div class="form-group">
+      <label>Kind</label>
+      <input type="text" [(ngModel)]="pet.kind" class="form-control" name="kind">
+    </div>
+    <div class="form-group">
+      <label>Age</label>
+      <input type="text" [(ngModel)]="pet.age" class="form-control" name="age">
+    </div>
+
+    <button type="submit"  class="btn btn-warning btn-lg">Save</button>
+  </form>
+
+  <hr>
+
+  <p><a href="#">Back</a></p>
+</div>
+
+
+<table class="table table-striped table-hover table-condensed">
+  <tr>
+ 		<th>Name</th>
+ 		<th>Kind</th>
+ 		<th>Age</th>
+    <th>Edit</th>
+    <th>Delete</th>
+ 	</tr>
+	<tr *ngFor="let pet of pets">
+		<td>{{pet.name}}</td>
+		<td>{{pet.kind}}</td>
+		<td>{{pet.age}}</td>
+    <td><a href="#" class="btn btn-primary btn-lg" role="button" data-toggle="modal"><span ></span> Edit </a></td>
+    <td><a href="#" class="btn btn-primary btn-lg"><span ></span> Delete </a></td>
+	</tr>
+</table>
+<a href="#" [routerLink]="[email+'/addpet']" class="btn btn-primary btn-lg"><span></span> Add pet</a>
+<router-outlet></router-outlet>
+<script>
+  $('document').ready(function(){
+    $('#modal').modal();
+  });
+</script>
