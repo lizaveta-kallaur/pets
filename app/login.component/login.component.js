@@ -24,12 +24,27 @@ var LoginComponent = (function () {
             return;
         }
         this.petService.login(this.user)
-            .subscribe(function () { return _this._router.navigateByUrl(_this.user.email); }, function (error) { return _this.errorMessage = error; });
+            .subscribe(function (res) {
+            if (res == "Successful.")
+                _this._router.navigateByUrl('/pets');
+            else
+                _this.message = res;
+        }, function (error) { return _this.errorMessage = error; });
+    };
+    LoginComponent.prototype.changePassword = function () {
+        var _this = this;
+        if (!this.user) {
+            this.message = "email";
+        }
+        this.petService.changePassword(this.user)
+            .subscribe(function (res) {
+            _this.message = "Success";
+        }, function (error) { return _this.errorMessage = error; });
     };
     LoginComponent = __decorate([
         core_1.Component({
-            selector: 'authorization',
-            template: "\n  \t<div class=\"container\">\n\n      <div class=\"col-sm-6 col-sm-offset-3\">\n\n          <h1><span class=\"fa fa-sign-in\"></span> Login</h1>\n\n          <!-- LOGIN FORM -->\n          <form action=\"/login\" method=\"post\">\n              <div class=\"form-group\">\n                  <label>Email</label>\n                  <input type=\"text\" [(ngModel)]=\"user.email\" class=\"form-control\" name=\"email\">\n              </div>\n              <div class=\"form-group\">\n                  <label>Password</label>\n                  <input type=\"password\" [(ngModel)]=\"user.password\" class=\"form-control\" name=\"password\">\n              </div>\n\n              <button type=\"submit\" (click)=\"login()\" class=\"btn-primary btn-lg\">Login</button>\n          </form>\n\n          <hr>\n\n          <p>Need an account? <a href=\"/signup\">Signup</a></p>\n          <p>Or go <a href=\"/\">home</a>.</p>\n\n      </div>\n\n  </div>\n  ",
+            selector: 'login',
+            templateUrl: 'app/login.component/login.component.html',
             providers: [
                 pet_service_1.PetService
             ]

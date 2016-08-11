@@ -11,44 +11,80 @@ export class PetService {
 
 	constructor(private http: Http) { }
 
-	getPets(email: string) {
-    	return this.http.get(`http://localhost:2000/${email}`)
-                  .map(this.extractData)
+	getPets() : Observable<Pet[]>{
+    	return this.http.get(`http://localhost:2000/pets`)
+                  .map(res => res.json())
                   .catch(this.handleError);
 	}
 
-	addPet(email: string, pet: Pet): Observable<Pet>  {
+	addPet(pet: Pet): Observable<Pet[]>  {
 	    let body = JSON.stringify( pet );
     	let headers = new Headers({ 'Content-Type': 'application/json' });
     	let options = new RequestOptions({ headers: headers });
-   		return this.http.post('http://localhost:2000/${email}/addpet', body, options)
-                    .map(this.extractData)
+    	console.log(body);
+   		return this.http.put('http://localhost:2000/addpet', body, options)
+                    .map(res => res)
                     .catch(this.handleError);
 	}
 
-	save(user: User): Observable<User>  {
+	saveChanges(pet: Pet, oldPet: Pet): Observable<Pet[]>  {
+	    let body = JSON.stringify( { pet, oldPet} );
+    	let headers = new Headers({ 'Content-Type': 'application/json' });
+    	let options = new RequestOptions({ headers: headers });
+    	console.log(body);
+   		return this.http.put(`http://localhost:2000/editpet`, body, options)
+                    .map(res => res)
+                    .catch(this.handleError);
+	}
+
+	delete(pet): Observable<Pet[]>  {
+	    let body = JSON.stringify( pet);
+    	let headers = new Headers({ 'Content-Type': 'application/json' });
+    	let options = new RequestOptions({ headers: headers });
+
+   		return this.http.put(`http://localhost:2000/deletepets`, body, options)
+                    .map(res => res)
+                    .catch(this.handleError);
+	}
+
+	addUser(user: User): Observable<string>  {
 	    let body = JSON.stringify( user );
     	let headers = new Headers({ 'Content-Type': 'application/json' });
     	let options = new RequestOptions({ headers: headers });
    		return this.http.post('http://localhost:2000/signup', body, options)
-                    .map(this.extractData)
+                    .map(res => res.json().msg)
                     .catch(this.handleError);
 	}
 
-	login(user: User): Observable<User> {
+	login(user: User): Observable<string> {
 		let body = JSON.stringify( user );
     	let headers = new Headers({ 'Content-Type': 'application/json' });
     	let options = new RequestOptions({ headers: headers });
 
     	return this.http.post('http://localhost:2000/login', body, options)
-                    .map(this.extractData)
+                    .map(res => res.json().msg)
                     .catch(this.handleError);
 	}
 
-	 private extractData(res: Response) {
+	changePassword(user: User): Observable<string>  {
+	    let body = JSON.stringify( user);
+    	let headers = new Headers({ 'Content-Type': 'application/json' });
+    	let options = new RequestOptions({ headers: headers });
+    	console.log(body);
+   		return this.http.put(`http://localhost:2000/password`, body, options)
+                    .map(res => res)
+                    .catch(this.handleError);
+	}
+
+	logout() {
+		return this.http.get(`http://localhost:2000/logout`)
+                  .map(res => res.json())
+                  .catch(this.handleError);
+	}
+
+	private extractData(res: Response) {
 	    let body = res.json();
-	    console.log(body);
-	    return body.data || { };
+	   	return body.msg || { };
 	}
 
 	private handleError (error: any) {

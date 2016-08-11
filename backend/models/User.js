@@ -3,14 +3,13 @@ var bcrypt   = require('bcrypt-nodejs');
 
 var Schema = mongoose.Schema;
 
-var Pet = require('./Pet.js')
 
 var userSchema = new Schema({
   full_name: { type: String, required: true },
   password: { type: String, required: true },
   email: { type: String, required: true, unique: true },
   age: Number,
-  pets: [Pet]
+  pets: Array
 });
 
 userSchema.methods.generateHash = function(password) {

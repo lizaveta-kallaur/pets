@@ -11,37 +11,103 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var core_1 = require('@angular/core');
 var pet_service_1 = require('../pet.service/pet.service');
 var router_1 = require('@angular/router');
-var router_2 = require('@angular/router');
-var PETS = [
-    { name: 'Кити', kind: 'кот', age: 4 },
-    { name: 'Кити', kind: 'кот', age: 4 },
-    { name: 'Кити', kind: 'кот', age: 4 },
-    { name: 'Кити', kind: 'кот', age: 4 }
-];
 var PetsComponent = (function () {
-    function PetsComponent(petService, route) {
+    function PetsComponent(petService) {
         this.petService = petService;
-        this.route = route;
-        this.pets = PETS;
+        this.foundPets = [];
+        this.deletePets = [];
+        this.checked = [];
     }
     PetsComponent.prototype.ngOnInit = function () {
         var _this = this;
-        this.sub = this.route.params.subscribe(function (params) {
-            _this.email = params['email'];
-            _this.petService.getPets(_this.email)
-                .subscribe(function (pets) { return _this.pets2 = pets; }, function (error) { return _this.errorMessage = error; });
+        this.petService.getPets()
+            .subscribe(function (pets) {
+            _this.pets = pets;
+            _this.pets.forEach(function (pet) {
+                _this.checked.push({
+                    name: pet.name,
+                    kind: pet.kind,
+                    age: pet.age,
+                    checked: false
+                });
+            });
+        }, function (error) { return _this.errorMessage = error; });
+    };
+    PetsComponent.prototype.edit = function (pet) {
+        this.editPet = pet;
+        this.oldPet = {
+            name: pet.name,
+            kind: pet.kind,
+            age: pet.age
+        };
+    };
+    PetsComponent.prototype.saveChanges = function () {
+        var _this = this;
+        if (!this.editPet) {
+            return;
+        }
+        this.petService.saveChanges(this.editPet, this.oldPet)
+            .subscribe(function (res) {
+            _this.message = "Pet successfully changed";
+            _this.petService.getPets()
+                .subscribe(function (pets) {
+                _this.pets = pets;
+            }, function (error) { return _this.errorMessage = error; });
+        }, function (error) { return _this.errorMessage = error; });
+    };
+    PetsComponent.prototype.search = function () {
+        var _this = this;
+        if (this.foundPets) {
+            this.foundPets = [];
+        }
+        this.pets.forEach(function (pet) {
+            if (pet.name == _this.searchName)
+                _this.foundPets.push(pet);
         });
+    };
+    PetsComponent.prototype.check = function (pet) {
+        this.checked.map(function (elem) {
+            if (elem.name == pet.name) {
+                if (elem.checked)
+                    elem.checked = false;
+                else
+                    elem.checked = true;
+            }
+            return elem;
+        });
+        console.log(this.checked);
+    };
+    PetsComponent.prototype.delete = function () {
+        var _this = this;
+        var pets = this.checked.filter(function (pet) { return pet.checked; });
+        console.log(pets);
+        if (pets) {
+            this.petService.delete(pets)
+                .subscribe(function (res) {
+                _this.message = "Pet successfully deleted";
+                _this.petService.getPets()
+                    .subscribe(function (pets) {
+                    _this.pets = pets;
+                }, function (error) { return _this.errorMessage = error; });
+            }, function (error) { return _this.errorMessage = error; });
+        }
+    };
+    PetsComponent.prototype.logout = function () {
+        var _this = this;
+        this.petService.logout()
+            .subscribe(function (res) {
+            console.log(res);
+        }, function (error) { return _this.errorMessage = error; });
     };
     PetsComponent = __decorate([
         core_1.Component({
-            selector: 'pets',
             templateUrl: 'app/pets.component/pets.component.html',
             providers: [
                 pet_service_1.PetService
             ],
-            directives: [router_2.ROUTER_DIRECTIVES]
+            directives: [router_1.ROUTER_DIRECTIVES]
         }), 
-        __metadata('design:paramtypes', [pet_service_1.PetService, router_1.ActivatedRoute])
+        __metadata('design:paramtypes', [pet_service_1.PetService])
     ], PetsComponent);
     return PetsComponent;
 }());

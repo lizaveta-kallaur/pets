@@ -19,11 +19,11 @@ var routes = [
         component: home_page_component_1.HomePageComponent
     },
     {
-        path: ':email',
+        path: 'pets',
         component: pets_component_1.PetsComponent
     },
     {
-        path: ':email/addpet',
+        path: 'addpet',
         component: add_pet_component_1.AddPetComponent
     },
 ];

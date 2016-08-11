@@ -20,11 +20,11 @@ const routes: RouterConfig = [
     	component: HomePageComponent
     },
     {
-    	path: ':email',
+    	path: 'pets',
     	component: PetsComponent
     },
     {
-        path: ':email/addpet',
+        path: 'addpet',
         component: AddPetComponent
     },
 ];

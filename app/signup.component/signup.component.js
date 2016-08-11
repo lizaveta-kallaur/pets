@@ -19,18 +19,19 @@ var SignupComponent = (function () {
         this.signup = false;
         this.user = new user_1.User();
     }
-    SignupComponent.prototype.save = function () {
+    SignupComponent.prototype.addUser = function () {
         var _this = this;
-        if (!this.user) {
-            return;
-        }
-        this.petService.save(this.user)
-            .subscribe(function () { return _this.signup = true; }, function (error) { return _this.errorMessage = error; });
+        this.petService.addUser(this.user)
+            .subscribe(function (res) {
+            _this.message = res;
+            if (res === "An email has been sent to you. Please check it to verify your account.") {
+                _this.signup = true;
+            }
+        }, function (error) { return _this.errorMessage = error; });
     };
     SignupComponent = __decorate([
         core_1.Component({
-            selector: 'registration',
-            template: "\n    <div class=\"container\" >\n\n      <div class=\"col-sm-6 col-sm-offset-3\">\n\n          <h1 *ngIf=\"!signup\"><span *ngIf=\"!signup\" class=\"fa fa-sign-in\"></span> Signup</h1>\n\n          <!-- LOGIN FORM -->\n          <form action=\"/signup\" method=\"post\" *ngIf=\"!signup\">\n              <div class=\"form-group\">\n                  <label>Email</label>\n                  <input type=\"text\" [(ngModel)]=\"user.email\" class=\"form-control\" name=\"email\">\n              </div>\n               <div class=\"form-group\">\n                  <label>Full name</label>\n                  <input type=\"text\" [(ngModel)]=\"user.fullname\" class=\"form-control\" name=\"fullname\">\n              </div>\n               <div class=\"form-group\">\n                  <label>Age</label>\n                  <input type=\"text\" [(ngModel)]=\"user.age\" class=\"form-control\" name=\"age\">\n              </div>\n              <div class=\"form-group\">\n                  <label>Password</label>\n                  <input type=\"password\" [(ngModel)]=\"user.password\" class=\"form-control\" name=\"password\">\n              </div>\n\n              <button type=\"submit\" (click)=\"save()\" class=\"btn-primary btn-lg\">Signup</button>\n          </form>\n          \n          <h1 *ngIf=\"signup\">Please, confirm your email</h1>\n\n          <hr>\n          \n          <p>Already have an account? <a href=\"/login\">Login</a></p>\n          <p>Or go <a href=\"/\">home</a>.</p>\n\n      </div>\n\n    </div>\n\n  ",
+            templateUrl: 'app/signup.component/signup.component.html',
             providers: [
                 pet_service_1.PetService
             ]

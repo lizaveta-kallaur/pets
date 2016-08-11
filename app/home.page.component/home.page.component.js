@@ -16,7 +16,7 @@ var HomePageComponent = (function () {
     HomePageComponent = __decorate([
         core_1.Component({
             selector: 'home-page',
-            template: "\n    <div class=\"jumbotron text-center\">\n            <h1><span class=\"fa fa-lock\"></span> Node Authentication</h1>\n\n            <p>Login or Register with:</p>\n\n            <a href=\"#\" [routerLink]=\"['/login']\" class=\"btn btn-primary btn-lg\"><span class=\"fa fa-user\"></span> Local Login</a>\n            <a href=\"#\" [routerLink]=\"['/signup']\" class=\"btn btn-primary btn-lg\"><span class=\"fa fa-user\"></span> Local Signup</a>\n     </div>\n     \n  ",
+            templateUrl: 'app/home.page.component/home.page.component.html',
             directives: [router_1.ROUTER_DIRECTIVES],
         }), 
         __metadata('design:paramtypes', [])

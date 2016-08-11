@@ -4,48 +4,7 @@ import { User } from '../user/user';
 import { PetService } from '../pet.service/pet.service';
 
 @Component({
-  selector: 'registration',
-  template: `
-    <div class="container" >
-
-      <div class="col-sm-6 col-sm-offset-3">
-
-          <h1 *ngIf="!signup"><span *ngIf="!signup" class="fa fa-sign-in"></span> Signup</h1>
-
-          <!-- LOGIN FORM -->
-          <form action="/signup" method="post" *ngIf="!signup">
-              <div class="form-group">
-                  <label>Email</label>
-                  <input type="text" [(ngModel)]="user.email" class="form-control" name="email">
-              </div>
-               <div class="form-group">
-                  <label>Full name</label>
-                  <input type="text" [(ngModel)]="user.fullname" class="form-control" name="fullname">
-              </div>
-               <div class="form-group">
-                  <label>Age</label>
-                  <input type="text" [(ngModel)]="user.age" class="form-control" name="age">
-              </div>
-              <div class="form-group">
-                  <label>Password</label>
-                  <input type="password" [(ngModel)]="user.password" class="form-control" name="password">
-              </div>
-
-              <button type="submit" (click)="save()" class="btn-primary btn-lg">Signup</button>
-          </form>
-          
-          <h1 *ngIf="signup">Please, confirm your email</h1>
-
-          <hr>
-          
-          <p>Already have an account? <a href="/login">Login</a></p>
-          <p>Or go <a href="/">home</a>.</p>
-
-      </div>
-
-    </div>
-
-  `,
+  templateUrl: 'app/signup.component/signup.component.html',
   providers: [
      PetService
   ]
@@ -58,14 +17,19 @@ export class SignupComponent {
   ) { }
 
   signup = false;
+  message: any;
   errorMessage: any;
   private user: User = new User();
   
-  save() {
-    if (!this.user) { return; }
-    this.petService.save(this.user)
+  addUser() {
+    this.petService.addUser(this.user)
           .subscribe(
-            ()  => this.signup = true,
+            (res)  =>{
+              this.message = res;
+              if (res === "An email has been sent to you. Please check it to verify your account.") {
+                this.signup = true;
+              }
+            },
             error =>  this.errorMessage = <any>error);
   }
 }

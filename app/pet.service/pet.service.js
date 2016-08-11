@@ -17,25 +17,43 @@ var PetService = (function () {
     function PetService(http) {
         this.http = http;
     }
-    PetService.prototype.getPets = function (email) {
-        return this.http.get("http://localhost:2000/" + email)
-            .map(this.extractData)
+    PetService.prototype.getPets = function () {
+        return this.http.get("http://localhost:2000/pets")
+            .map(function (res) { return res.json(); })
             .catch(this.handleError);
     };
-    PetService.prototype.addPet = function (email, pet) {
+    PetService.prototype.addPet = function (pet) {
         var body = JSON.stringify(pet);
         var headers = new http_1.Headers({ 'Content-Type': 'application/json' });
         var options = new http_1.RequestOptions({ headers: headers });
-        return this.http.post('http://localhost:2000/${email}/addpet', body, options)
-            .map(this.extractData)
+        console.log(body);
+        return this.http.put('http://localhost:2000/addpet', body, options)
+            .map(function (res) { return res; })
             .catch(this.handleError);
     };
-    PetService.prototype.save = function (user) {
+    PetService.prototype.saveChanges = function (pet, oldPet) {
+        var body = JSON.stringify({ pet: pet, oldPet: oldPet });
+        var headers = new http_1.Headers({ 'Content-Type': 'application/json' });
+        var options = new http_1.RequestOptions({ headers: headers });
+        console.log(body);
+        return this.http.put("http://localhost:2000/editpet", body, options)
+            .map(function (res) { return res; })
+            .catch(this.handleError);
+    };
+    PetService.prototype.delete = function (pet) {
+        var body = JSON.stringify(pet);
+        var headers = new http_1.Headers({ 'Content-Type': 'application/json' });
+        var options = new http_1.RequestOptions({ headers: headers });
+        return this.http.put("http://localhost:2000/deletepets", body, options)
+            .map(function (res) { return res; })
+            .catch(this.handleError);
+    };
+    PetService.prototype.addUser = function (user) {
         var body = JSON.stringify(user);
         var headers = new http_1.Headers({ 'Content-Type': 'application/json' });
         var options = new http_1.RequestOptions({ headers: headers });
         return this.http.post('http://localhost:2000/signup', body, options)
-            .map(this.extractData)
+            .map(function (res) { return res.json().msg; })
             .catch(this.handleError);
     };
     PetService.prototype.login = function (user) {
@@ -43,13 +61,26 @@ var PetService = (function () {
         var headers = new http_1.Headers({ 'Content-Type': 'application/json' });
         var options = new http_1.RequestOptions({ headers: headers });
         return this.http.post('http://localhost:2000/login', body, options)
-            .map(this.extractData)
+            .map(function (res) { return res.json().msg; })
+            .catch(this.handleError);
+    };
+    PetService.prototype.changePassword = function (user) {
+        var body = JSON.stringify(user);
+        var headers = new http_1.Headers({ 'Content-Type': 'application/json' });
+        var options = new http_1.RequestOptions({ headers: headers });
+        console.log(body);
+        return this.http.put("http://localhost:2000/password", body, options)
+            .map(function (res) { return res; })
+            .catch(this.handleError);
+    };
+    PetService.prototype.logout = function () {
+        return this.http.get("http://localhost:2000/logout")
+            .map(function (res) { return res.json(); })
             .catch(this.handleError);
     };
     PetService.prototype.extractData = function (res) {
         var body = res.json();
-        console.log(body);
-        return body.data || {};
+        return body.msg || {};
     };
     PetService.prototype.handleError = function (error) {
         // In a real world app, we might use a remote logging infrastructure
